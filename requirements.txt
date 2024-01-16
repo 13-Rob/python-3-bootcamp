@@ -1,3 +1,4 @@
 colorama
 pylint
 flake8
+emoji
