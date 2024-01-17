@@ -1,11 +1,17 @@
 """
 BLACKJACK MILESTONE PROJECT #2
 """
-from os import system
+import os
 
 from colorama import Fore, Style
 
 from game_package.game_module import Deck, Player, Dealer
+
+def clear():
+    """
+    Clear the terminal screen
+    """
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def det_winner(player, dealer):
     """
@@ -38,7 +44,7 @@ def main():
     player = Player("Rob")
 
     while op.startswith('y'):
-        system('cls')
+        clear()
         deck = Deck()
         deck.shuffle()
         player.empty_hand()
