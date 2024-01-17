@@ -90,6 +90,12 @@ class Player:
         self.hand.append(new_card)
         self.hand_value += new_card.value
 
+        if self.hand_value > 21:
+            for card in self.hand:
+                if card.rank == 'Ace' and card.value == 11:
+                    card.value = 1
+                    break
+
     def show_hand(self):
         """
         Prints the player's current hand
