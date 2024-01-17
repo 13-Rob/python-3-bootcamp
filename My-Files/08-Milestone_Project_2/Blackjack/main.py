@@ -13,35 +13,51 @@ def clear():
     """
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def det_winner(player, dealer):
+def det_winner(player, dealer, total_bet):
     """
     Determines who won, player or dealer
     """
+    winner = 0
+
     if player.hand_value > dealer.hand_value:
         if player.hand_value <= 21:
-            return 1
-        if dealer.hand_value <= 21:
-            return -1
+            winner = 1
+        elif dealer.hand_value <= 21:
+            winner = -1
 
     if player.hand_value < dealer.hand_value:
         if dealer.hand_value <= 21:
-            return -1
-        if player.hand_value <= 21:
-            return 1
+            winner = -1
+        elif player.hand_value <= 21:
+            winner = 1
 
-    return 0
+    if player.hand_value == dealer.hand_value:
+        if len(player.hand) > len(dealer.hand):
+            winner = -1
+        elif len(player.hand) < len(dealer.hand):
+            winner = 1
+
+    if winner == 1:
+        print("Dealer: *sigh* You won")
+        player.deposit(total_bet)
+    elif winner == -1:
+        print("Dealer: I won")
+        dealer.deposit(total_bet)
+    else:
+        print("Dealer: It's a tie...")
+        player.deposit(total_bet//2)
+        dealer.deposit(total_bet//2)
 
 def main():
     """
     Blackjack main function.
     """
 
-    dealer = Dealer("Dealer", 1000000)
+    dealer = Dealer("Dealer")
 
     op = 'y'
     # Game logic goes here
-    # name = input("Dealer: What should we call you?\n")
-    player = Player("Rob")
+    player = Player("Player")
 
     while op.startswith('y'):
         clear()
@@ -54,9 +70,17 @@ def main():
             + Fore.GREEN + f"${player.balance}.00"
             + Style.RESET_ALL + ".")
 
-        # Bets here: Default 10
-        if player.balance > 0:
-            total_bet = player.withdraw() + dealer.withdraw()
+        bet = int(input("Dealer: How much do you want to bet?\n"
+                            + Fore.GREEN + "$"))
+
+        print(Style.RESET_ALL, end="")
+
+        if player.balance >= bet:
+            total_bet = 0
+            total_bet = player.withdraw(bet) * 2
+        else:
+            print("Dealer: You don't have sufficient funds.")
+            break
 
         print("The total bet is "
             + Fore.GREEN + f"${total_bet}.00"
@@ -102,24 +126,11 @@ def main():
         player.show_hand()
         dealer.show_full_hand()
 
-        winner = det_winner(player, dealer)
-
-        if winner == 1:
-            print("Dealer: *sigh* You won")
-            player.deposit(total_bet)
-        elif winner == -1:
-            print("Dealer: I won")
-            dealer.deposit(total_bet)
-        else:
-            print("Dealer: It's a tie...")
-            player.deposit(total_bet/2)
-            dealer.deposit(total_bet/2)
+        det_winner(player, dealer, total_bet)
 
         total_bet = 0
 
         op = input("Do you want to play again? (Y/n)\n").lower()
-
-        # Repeat
 
 if __name__=='__main__':
     main()

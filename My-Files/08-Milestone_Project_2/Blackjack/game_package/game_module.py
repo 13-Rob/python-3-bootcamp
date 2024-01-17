@@ -96,6 +96,10 @@ class Player:
                     card.value = 1
                     break
 
+            self.hand_value = 0
+            for card in self.hand:
+                self.hand_value += card.value
+
     def show_hand(self):
         """
         Prints the player's current hand
