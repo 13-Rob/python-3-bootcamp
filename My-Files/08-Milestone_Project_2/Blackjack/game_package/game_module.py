@@ -1,8 +1,9 @@
 """
 Game components module
 """
-
 from random import shuffle
+
+from colorama import Fore, Style
 
 suits = ('♥️', '♦️', '♠️', '♣️')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven',
@@ -60,15 +61,15 @@ class Player:
     def __init__(self, name, balance=100):
         self.name = name
         self.balance = balance
-        self._hand = []
+        self.hand = []
         self.hand_value = 0
 
     def __str__(self):
-        return f"The player has ${self.balance}.00/"
+        return f"The player has ${self.balance}.00."
 
-    def bet(self, amount=10):
+    def withdraw(self, amount=10):
         """
-        Removes the player an amount of money from its balance to bet
+        Withdraw money from the player's balance
         """
         if amount > self.balance:
             print("Sorry, but you don have sufficient funds.")
@@ -76,21 +77,34 @@ class Player:
         self.balance -= amount
         return amount
 
+    def deposit(self, amount):
+        """
+        Deposit money to the player's balance
+        """
+        self.balance += amount
+
     def add_card(self, new_card):
         """
         Adds one card to the player's hand
         """
-        self._hand.append(new_card)
+        self.hand.append(new_card)
         self.hand_value += new_card.value
 
     def show_hand(self):
         """
         Prints the player's current hand
         """
-        print(f"{self.name}'s hand: ", end="")
-        for c in self._hand:
+        print(self.name + "'s hand: ", end=Fore.RED)
+        for c in self.hand:
             print(c, end=' ')
-        print(f" = {self.hand_value}")
+        print(f"= {self.hand_value}" + Style.RESET_ALL)
+
+    def empty_hand(self):
+        """
+        Empties the player's hand
+        """
+        self.hand = []
+        self.hand_value = 0
 
 class Dealer(Player):
     """
@@ -99,12 +113,21 @@ class Dealer(Player):
 
     def show_hand(self):
         """
-        Prints the dealer's current hand
+        Prints the dealer's current hand without the card facing down
         """
-        print(f"{self.name}'s hand: ", end="")
-        for c in self._hand:
-            if self._hand.index(c) == 1:
-                print("▓▓", end=' ')
+        print(self.name + "'s hand: ", end=Fore.BLUE)
+        for c in self.hand:
+            if self.hand.index(c) == 1:
+                print("▓▓▓▓", end=' ')
             else:
                 print(c, end=' ')
-        print()
+        print(Style.RESET_ALL)
+
+    def show_full_hand(self):
+        """
+        Prints the dealer's full hand
+        """
+        print(f"{self.name}'s hand: ", end=Fore.BLUE)
+        for c in self.hand:
+            print(c, end=' ')
+        print(f"= {self.hand_value}" + Style.RESET_ALL)

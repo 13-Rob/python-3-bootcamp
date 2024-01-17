@@ -1,14 +1,34 @@
 """
 BLACKJACK MILESTONE PROJECT #2
 """
+from os import system
+
+from colorama import Fore, Style
+
 from game_package.game_module import Deck, Player, Dealer
+
+def det_winner(player, dealer):
+    """
+    Determines who won, player or dealer
+    """
+    if player.hand_value > dealer.hand_value:
+        if player.hand_value <= 21:
+            return 1
+        if dealer.hand_value <= 21:
+            return -1
+
+    if player.hand_value < dealer.hand_value:
+        if dealer.hand_value <= 21:
+            return -1
+        if player.hand_value <= 21:
+            return 1
+
+    return 0
 
 def main():
     """
     Blackjack main function.
     """
-    deck = Deck()
-    deck.shuffle()
 
     dealer = Dealer("Dealer", 1000000)
 
@@ -16,40 +36,91 @@ def main():
     # op = input('Dealer: Do you want to play Blackjack? Y/n\n').lower()
 
     if op.startswith('y'):
+        game_on = True
         # Game logic goes here
         # name = input("Dealer: What should we call you?\n")
         player = Player("Rob")
 
-        # while game_on:
-        print(f"Dealer: Your balance is ${player.balance}.00.")
+        while game_on:
+            system('cls')
+            deck = Deck()
+            deck.shuffle()
+            player.empty_hand()
+            dealer.empty_hand()
 
-        # Bets here: Default 10
-        if player.bet() > 0:
-            total_bet = player.bet() + dealer.bet()
+            print("Dealer: Your balance is "
+                + Fore.GREEN + f"${player.balance}.00"
+                + Style.RESET_ALL + ".")
 
-        print(f"The total bet is ${total_bet}.00.")
+            # Bets here: Default 10
+            if player.balance > 0:
+                total_bet = player.withdraw() + dealer.withdraw()
 
-        player.add_card(deck.deal_one())
-        dealer.add_card(deck.deal_one())
-        player.add_card(deck.deal_one())
-        dealer.add_card(deck.deal_one())
+            print("The total bet is "
+                + Fore.GREEN + f"${total_bet}.00"
+                + Style.RESET_ALL + ".")
 
-        player.show_hand()
-        dealer.show_hand()
-
-        # Ask the player if they want to hit or stay
-        op = input("Dealer: Hit or Stay? H/s\n").lower()
-
-        while op.startswith('h'):
             player.add_card(deck.deal_one())
+            dealer.add_card(deck.deal_one())
+            player.add_card(deck.deal_one())
+            dealer.add_card(deck.deal_one())
+
             player.show_hand()
-            op = input("Delaer: Hit or Stay? H/s\n").lower()
+            dealer.show_hand()
 
-        # Dealer decides if they want to hit or stay
-        # Resolve game
+            # Ask the player if they want to hit or stay
+            op = input("Dealer: Hit or Stay? H/s\n").lower()
+
+            while op.startswith('h'):
+                player.add_card(deck.deal_one())
+                player.show_hand()
+                op = input("Delaer: Hit or Stay? H/s\n").lower()
+
+            player.show_hand()
+
+            # Dealer decides if they want to hit or stay
+            if (dealer.hand_value < 21 and
+                    player.hand_value > dealer.hand_value and
+                    player.hand_value <= 21):
+                op = 'h'
+            else:
+                op = 's'
+
+            while op.startswith('h'):
+                dealer.add_card(deck.deal_one())
+                dealer.show_hand()
+                if (dealer.hand_value < 21 and
+                        player.hand_value > dealer.hand_value and
+                        player.hand_value <= 21):
+                    op = 'h'
+                else:
+                    op = 's'
+
+            # Resolve game
+            player.show_hand()
+            dealer.show_full_hand()
+
+            winner = det_winner(player, dealer)
+
+            if winner == 1:
+                print("Dealer: *sigh* You won")
+                player.deposit(total_bet)
+            elif winner == -1:
+                print("Dealer: I won")
+                dealer.deposit(total_bet)
+            else:
+                print("Dealer: It's a tie...")
+                player.deposit(total_bet/2)
+                dealer.deposit(total_bet/2)
+
+            total_bet = 0
+
+            op = input("Do you want to play again? (Y/n)\n").lower()
+
+            if not op.startswith('y'):
+                game_on = False
+
         # Repeat
-
-    print("Dealer: Bye-bye!")
 
 if __name__=='__main__':
     main()
