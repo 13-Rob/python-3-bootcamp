@@ -2,3 +2,4 @@ colorama
 pylint
 flake8
 emoji
+send2trash
