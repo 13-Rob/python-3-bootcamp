@@ -18,4 +18,5 @@ send2trash
 pillow
 
 # Working with PDFs
-PyPDF2
+# PyPDF2
+PyPDF4
