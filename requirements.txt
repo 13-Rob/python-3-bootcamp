@@ -16,3 +16,6 @@ send2trash
 
 # Working with Images
 pillow
+
+# Working with PDFs
+PyPDF2
