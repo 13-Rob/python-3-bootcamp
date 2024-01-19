@@ -13,3 +13,6 @@ bs4
 
 # Sending to Files to Trash
 send2trash
+
+# Working with Images
+pillow
