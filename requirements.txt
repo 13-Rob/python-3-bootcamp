@@ -1,5 +1,15 @@
-colorama
+# Linters
 pylint
 flake8
+
+# Formatters
+colorama
 emoji
+
+# Web Scraping
+requests
+lxml
+bs4
+
+# Sending to Files to Trash
 send2trash
