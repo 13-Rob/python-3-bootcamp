@@ -20,3 +20,13 @@ pillow
 # Working with PDFs
 # PyPDF2
 PyPDF4
+
+# GUI
+ipywidgets
+
+# Others
+numpy
+matplotlib
+scipy
+seaborn
+pandas
